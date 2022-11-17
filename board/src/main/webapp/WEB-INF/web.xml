@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID" version="2.5">
+    <display-name>egov.sample</display-name> <!-- 프로젝트 표시 이름 -->
+
+    <!-- 필터 : 클라이언트(브라우저)가 서버로 요청을 보내올때 요청이 서블릿으로 전달되기 전, 후에 필터링하기 위한 기술 -->
+    <filter> 
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>HTMLTagFilter</filter-name>
+        <filter-class>egovframework.rte.ptl.mvc.filter.HTMLTagFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HTMLTagFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+    <!-- 필터 끝 -->
+
+    <!-- 서블릿 환경정보 설정 : 스프링 컨테이너 설정 #2.2.1.1 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:egovframework/spring/context-*.xml</param-value>
+    </context-param>
+    <!-- 스프링 컨테이너 설정 끝-->
+
+    <!-- 리스너 : 어떠한 이벤트가 발생하면 호출되어 처리하는 객체. -->
+    <listener>
+        <!-- 웹 애플리케이션 시작과 종료시 실행하는 인터페이스를 구현하여 스프링 컨테이너 실행 -->
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!-- 리스너 끝 -->
+
+
+    <!-- 서블릿 설정 : DispatcherServlet 설정 : 클라이언트에서 요청이 오면 적절한 서블릿으로 맵핑 시켜주는 서블릿 #2.2.1.2-->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/config/egovframework/springmvc/dispatcher-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+	<!-- .do 없애기위해 -->
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <!-- 원래꺼
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+     -->
+    <!-- 서블릿 설정 끝 -->
+
+    <!-- 시작 페이지 설정 -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    <!-- 시작 페이지 설정 끝 -->
+    <!-- 서블릿 보안 시작 -->
+    <login-config>
+        <auth-method>BASIC</auth-method> <!--HTTP-->
+    </login-config>
+    <!-- 서블릿 보안 끝 -->    
+
+    <!-- 에러페이지 설정 -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/common/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/common/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/common/error.jsp</location>
+    </error-page>
+    <!-- 에러페이지 끝 -->
+
+</web-app>
